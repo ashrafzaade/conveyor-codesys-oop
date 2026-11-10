@@ -1,0 +1,718 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP22 Patch 4" creationDateTime="2026-11-10T18:21:14.8064884" />
+  <contentHeader name="Conveyor_Mini_v3.project" modificationDateTime="2026-11-10T18:19:28.4854661">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous />
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/application" handleUnknown="implementation">
+      <resource name="Application">
+        <task name="MainTask" interval="PT0.02S" priority="1">
+          <pouInstance name="PLC_PRG" typeName="">
+            <documentation>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+            </documentation>
+          </pouInstance>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+              <TaskSettings KindOfTask="Cyclic" Interval="t#20ms" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+              </TaskSettings>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+              <ObjectId>03ead63e-f230-4f42-ad78-bc9136fcfb1f</ObjectId>
+            </data>
+          </addData>
+        </task>
+        <task name="VISU_TASK" interval="PT0.1S" priority="31">
+          <pouInstance name="VisuElems.Visu_Prg" typeName="">
+            <documentation>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+            </documentation>
+          </pouInstance>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+              <TaskSettings KindOfTask="Cyclic" Interval="100" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                <Watchdog Enabled="false" TimeUnit="ms" />
+              </TaskSettings>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+              <ObjectId>da89af35-38b6-431c-8b29-377bfd055e8f</ObjectId>
+            </data>
+          </addData>
+        </task>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/datatype" handleUnknown="implementation">
+            <dataType name="E_State">
+              <baseType>
+                <enum>
+                  <values>
+                    <value name="IDLE" value="0" />
+                    <value name="RUNNING" value="1" />
+                    <value name="BATCH_DONE" value="2" />
+                    <value name="ESTOP" value="3" />
+                  </values>
+                </enum>
+              </baseType>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/enumvaluedocumentation" handleUnknown="implementation">
+                  <EnumValueDocumentation>
+                    <EnumValue>
+                      <Name>IDLE</Name>
+                      <Documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml"> Waiting for start command</xhtml>
+                      </Documentation>
+                    </EnumValue>
+                    <EnumValue>
+                      <Name>RUNNING</Name>
+                      <Documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml"> Conveyor running, counting products</xhtml>
+                      </Documentation>
+                    </EnumValue>
+                    <EnumValue>
+                      <Name>BATCH_DONE</Name>
+                      <Documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml"> Target count reached, waiting for reset</xhtml>
+                      </Documentation>
+                    </EnumValue>
+                    <EnumValue>
+                      <Name>ESTOP</Name>
+                      <Documentation>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml"> Emergency stop active, latched until reset</xhtml>
+                      </Documentation>
+                    </EnumValue>
+                  </EnumValueDocumentation>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>09379192-5f1e-4334-aa78-512ac0fb4a35</ObjectId>
+                </data>
+              </addData>
+            </dataType>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/interface" handleUnknown="implementation">
+            <Interface name="IConveyor" ObjectId="ae7737bf-6970-45a0-9c14-7fcb2ecad1db">
+              <Methods>
+                <Method name="Start" ObjectId="f6063f50-429e-499b-ac25-7cbe5d3a7704">
+                  <interface />
+                  <addData />
+                </Method>
+                <Method name="Stop" ObjectId="bbc8ad27-1c5a-4d3f-8336-18e09b8c3f42">
+                  <interface />
+                  <addData />
+                </Method>
+                <Method name="Reset" ObjectId="e4fc0fcb-acc2-4869-b9e0-f74a488e077b">
+                  <interface />
+                  <addData />
+                </Method>
+              </Methods>
+              <addData />
+            </Interface>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="PLC_PRG" pouType="program">
+              <interface>
+                <localVars>
+                  <variable name="bStart">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Start button (NO)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bStopNC">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="TRUE" />
+                    </initialValue>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Stop button (NC)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bEStopNC">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="TRUE" />
+                    </initialValue>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Emergency stop (NC)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bReset">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Reset button (NO)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bSensor">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Sensor of conveyor 1</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bSensor2">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Sensor of conveyor 2 (test via watch window)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bMotor">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> --- Outputs of conveyor 1 (bound to the visualization) ---</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bBatchLamp">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="bEStopLamp">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="iCount">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="rtStart">
+                    <type>
+                      <derived name="R_TRIG" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> --- Edge detectors for the buttons ---</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="rtReset">
+                    <type>
+                      <derived name="R_TRIG" />
+                    </type>
+                  </variable>
+                  <variable name="Conv1">
+                    <type>
+                      <derived name="FB_Conveyor" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> --- Two instances: one base type, one derived type ---</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="Conv2">
+                    <type>
+                      <derived name="FB_JamConveyor" />
+                    </type>
+                    <initialValue>
+                      <structValue>
+                        <value member="iTarget">
+                          <simpleValue value="5" />
+                        </value>
+                      </structValue>
+                    </initialValue>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> different batch size</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="aConv">
+                    <type>
+                      <array>
+                        <dimension lower="1" upper="2" />
+                        <baseType>
+                          <derived name="IConveyor" />
+                        </baseType>
+                      </array>
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> --- Interface references for polymorphic access ---</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="i">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="bMotor2">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> --- Mirror of conveyor 2 outputs, for easy monitoring ---</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bJam2">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                </localVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">// Edge detection for the buttons
+rtStart(CLK := bStart);
+rtReset(CLK := bReset);
+
+// Bind interface references to the concrete instances
+aConv[1] := Conv1;
+aConv[2] := Conv2;
+
+// Polymorphic commands: the loop does not know which type each element is
+FOR i := 1 TO 2 DO
+    IF rtStart.Q THEN
+        aConv[i].Start();
+    END_IF
+    IF NOT bStopNC THEN
+        aConv[i].Stop();
+    END_IF
+    IF rtReset.Q THEN
+        aConv[i].Reset();
+    END_IF
+END_FOR
+
+// Cyclic execution of each instance
+Conv1(bSensor := bSensor,  bEStopNC := bEStopNC);
+Conv2(bSensor := bSensor2, bEStopNC := bEStopNC, tJamTimeout := T#5S);
+
+// Map conveyor 1 outputs to the variables used by the visualization
+bMotor     := Conv1.bMotor;
+bBatchLamp := Conv1.bBatchDone;
+bEStopLamp := Conv1.bEStopActive;
+iCount     := Conv1.iCount;
+
+// Mirror conveyor 2 outputs
+bMotor2 := Conv2.bMotor;
+bJam2   := Conv2.bJam;
+</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>d9154b34-f8d8-467a-96db-1436d19b1c69</ObjectId>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="FB_Conveyor" pouType="functionBlock">
+              <interface>
+                <inputVars>
+                  <variable name="bSensor">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Product detection sensor</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bEStopNC">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="TRUE" />
+                    </initialValue>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Emergency stop (NC: TRUE in normal condition)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="iTarget">
+                    <type>
+                      <INT />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="10" />
+                    </initialValue>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Target count per batch</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                  <variable name="bMotor">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Conveyor motor</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bBatchDone">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> TRUE when the batch is complete</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bEStopActive">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> TRUE while in emergency stop state</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="iCount">
+                    <type>
+                      <INT />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Product counter</xhtml>
+                    </documentation>
+                  </variable>
+                </outputVars>
+                <localVars>
+                  <variable name="eState">
+                    <type>
+                      <derived name="E_State" />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="E_State.IDLE" />
+                    </initialValue>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Current machine state</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="rtSensor">
+                    <type>
+                      <derived name="R_TRIG" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Rising edge detector for the sensor</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bStartReq">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Command requests, set by the methods and cleared at the end of each cycle</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="bStopReq">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="bResetReq">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+                    <Inheritance>
+                      <Implements>IConveyor</Implements>
+                    </Inheritance>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">// Detect rising edge of the sensor (one pulse per product)
+rtSensor(CLK := bSensor);
+
+// E-Stop has priority over everything, in every state
+IF NOT bEStopNC THEN
+    eState := E_State.ESTOP;
+END_IF
+
+CASE eState OF
+
+    E_State.IDLE:
+        bMotor := FALSE;
+        // Start is ignored if a stop request arrives in the same cycle
+        IF bStartReq AND NOT bStopReq THEN
+            iCount := 0;
+            eState := E_State.RUNNING;
+        END_IF
+
+    E_State.RUNNING:
+        bMotor := TRUE;
+        IF rtSensor.Q THEN
+            iCount := iCount + 1;
+        END_IF
+        IF bStopReq THEN
+            // Normal stop: back to idle
+            eState := E_State.IDLE;
+        ELSIF iCount &gt;= iTarget THEN
+            // Batch finished
+            eState := E_State.BATCH_DONE;
+        END_IF
+
+    E_State.BATCH_DONE:
+        bMotor := FALSE;
+        IF bResetReq THEN
+            iCount := 0;
+            eState := E_State.IDLE;
+        END_IF
+
+    E_State.ESTOP:
+        bMotor := FALSE;
+        // E-Stop must be released AND a reset request is required
+        IF bEStopNC AND bResetReq THEN
+            iCount := 0;
+            eState := E_State.IDLE;
+        END_IF
+
+END_CASE
+
+// Status outputs are driven directly from the current state
+bBatchDone   := (eState = E_State.BATCH_DONE);
+bEStopActive := (eState = E_State.ESTOP);
+
+// Clear the requests: each method call is valid for one cycle only
+bStartReq := FALSE;
+bStopReq  := FALSE;
+bResetReq := FALSE;
+</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+                  <Method name="Start" ObjectId="9cb67cdf-1143-47e7-a117-808949aa29dd">
+                    <interface />
+                    <body>
+                      <ST>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">// Request a start (valid for one cycle)
+   bStartReq := TRUE;
+   </xhtml>
+                      </ST>
+                    </body>
+                    <addData />
+                  </Method>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+                  <Method name="Stop" ObjectId="c377ca6e-45d8-480d-aa95-35a4fa825b55">
+                    <interface />
+                    <body>
+                      <ST>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">// Request a normal stop (valid for one cycle)
+bStopReq := TRUE;
+</xhtml>
+                      </ST>
+                    </body>
+                    <addData />
+                  </Method>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+                  <Method name="Reset" ObjectId="31c90ad5-86cb-4821-a24c-4e631786f22f">
+                    <interface />
+                    <body>
+                      <ST>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">// Request a reset after batch complete or emergency stop (valid for one cycle)
+bResetReq := TRUE;
+</xhtml>
+                      </ST>
+                    </body>
+                    <addData />
+                  </Method>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>0ab37e3c-12ab-495a-9799-5201a7cff6dc</ObjectId>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="FB_JamConveyor" pouType="functionBlock">
+              <interface>
+                <inputVars>
+                  <variable name="tJamTimeout">
+                    <type>
+                      <TIME />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="TIME#5s0ms" />
+                    </initialValue>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Max time without a product while running</xhtml>
+                    </documentation>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                  <variable name="bJam">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> TRUE when a jam has been detected</xhtml>
+                    </documentation>
+                  </variable>
+                </outputVars>
+                <localVars>
+                  <variable name="tonJam">
+                    <type>
+                      <derived name="TON" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> Timer for jam detection</xhtml>
+                    </documentation>
+                  </variable>
+                </localVars>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/pouinheritance" handleUnknown="implementation">
+                    <Inheritance>
+                      <Extends>FB_Conveyor</Extends>
+                    </Inheritance>
+                  </data>
+                </addData>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">// Run the base class logic first (not called automatically in CODESYS)
+SUPER^();
+
+// Jam detection: motor running but no product detected for tJamTimeout.
+// The timer is reset by every product (rising edge of the sensor).
+tonJam(IN := (eState = E_State.RUNNING) AND NOT rtSensor.Q, PT := tJamTimeout);
+
+IF tonJam.Q THEN
+    bJam := TRUE;
+    eState := E_State.IDLE;   // Stop the conveyor
+END_IF
+</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+                  <Method name="Start" ObjectId="b414f030-e14f-44e3-a33a-25a8a31db3e9">
+                    <interface />
+                    <body>
+                      <ST>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">// Override: ignore start requests while a jam is active
+IF NOT bJam THEN
+    SUPER^.Start();   // Call the base class method
+END_IF</xhtml>
+                      </ST>
+                    </body>
+                    <addData />
+                  </Method>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+                  <Method name="Reset" ObjectId="9965ee90-687e-42af-95f7-6507f4c25ee4">
+                    <interface />
+                    <body>
+                      <ST>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">// Override: also clear the jam flag, then do the normal reset
+bJam := FALSE;
+SUPER^.Reset();
+</xhtml>
+                      </ST>
+                    </body>
+                    <addData />
+                  </Method>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>6b6f90fb-5a6e-4c81-aa64-6f99476e55dd</ObjectId>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+            <Libraries>
+              <Library Name="#IoStandard" Namespace="IoStandard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="true" DefaultResolution="IoStandard, 3.5.22.0 (System)" />
+              <Library Name="#3SLicense" Namespace="_3S_LICENSE" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="3SLicense, 0.0.0.0 (CODESYS)" ResolverGuid="97c3b452-d9fa-4ac2-9d0c-3d420aa6d95b" />
+              <Library Name="#CAA Device Diagnosis" Namespace="DED" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="CAA Device Diagnosis, 3.5.22.0 (CAA Technical Workgroup)" />
+              <Library Name="#Standard" Namespace="Standard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Standard, * (System)" />
+              <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, * (3S - Smart Software Solutions GmbH)" />
+              <Library Name="#System_VisuElems" Namespace="VisuElems" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElems, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemMeter" Namespace="VisuElemMeter" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemMeter, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemsSpecialControls" Namespace="VisuElemsSpecialControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsSpecialControls, 4.7.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemsWinControls" Namespace="VisuElemsWinControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsWinControls, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemTextEditor" Namespace="VisuElemTextEditor" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemTextEditor, 4.8.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemTrace" Namespace="VisuElemTrace" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemTrace, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuNativeControl" Namespace="VisuNativeControl" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuNativeControl, 4.9.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemsAlarm" Namespace="VisuElemsAlarm" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsAlarm, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemCamDisplayer" Namespace="VisuElemCamDisplayer" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemCamDisplayer, 4.7.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElem3DPath" Namespace="VisuElem3DPath" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElem3DPath, 4.7.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemsDateTime" Namespace="VisuElemsDateTime" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsDateTime, 4.9.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemXYChart" Namespace="VisuElemXYChart" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemXYChart, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuInputs" Namespace="VisuInputs" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuInputs, 4.7.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <PlaceholderRedirections>
+                <PlaceholderRedirection Placeholder="Standard" Redirection="Standard, 3.5.22.0 (System)" />
+                <PlaceholderRedirection Placeholder="Standard64" Redirection="Standard64, 3.5.20.0 (System)" />
+                <PlaceholderRedirection Placeholder="StringUtils" Redirection="StringUtils, 3.5.22.0 (System)" />
+                <PlaceholderRedirection Placeholder="Util" Redirection="Util, 3.5.22.0 (System)" />
+                <PlaceholderRedirection Placeholder="Collections" Redirection="Collections, 3.5.17.0 (System)" />
+              </PlaceholderRedirections>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>0ed2e484-3267-4027-8d47-02691a25aa3e</ObjectId>
+                </data>
+              </addData>
+            </Libraries>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+            <BuildProperties>
+              <CompilerDefines>GENERATE_OVERLAY_VISU,VISU_USEPROPERTYINFO</CompilerDefines>
+            </BuildProperties>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>64d0953c-9707-44f2-ac1a-ee9135db5404</ObjectId>
+          </data>
+        </addData>
+      </resource>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Object Name="Application" ObjectId="64d0953c-9707-44f2-ac1a-ee9135db5404">
+          <Object Name="Library Manager" ObjectId="0ed2e484-3267-4027-8d47-02691a25aa3e" />
+          <Object Name="PLC_PRG" ObjectId="d9154b34-f8d8-467a-96db-1436d19b1c69" />
+          <Object Name="MainTask" ObjectId="03ead63e-f230-4f42-ad78-bc9136fcfb1f" />
+          <Object Name="VISU_TASK" ObjectId="da89af35-38b6-431c-8b29-377bfd055e8f" />
+          <Object Name="E_State" ObjectId="09379192-5f1e-4334-aa78-512ac0fb4a35" />
+          <Object Name="FB_Conveyor" ObjectId="0ab37e3c-12ab-495a-9799-5201a7cff6dc">
+            <Object Name="Start" ObjectId="9cb67cdf-1143-47e7-a117-808949aa29dd" />
+            <Object Name="Stop" ObjectId="c377ca6e-45d8-480d-aa95-35a4fa825b55" />
+            <Object Name="Reset" ObjectId="31c90ad5-86cb-4821-a24c-4e631786f22f" />
+          </Object>
+          <Object Name="IConveyor" ObjectId="ae7737bf-6970-45a0-9c14-7fcb2ecad1db">
+            <Object Name="Start" ObjectId="f6063f50-429e-499b-ac25-7cbe5d3a7704" />
+            <Object Name="Stop" ObjectId="bbc8ad27-1c5a-4d3f-8336-18e09b8c3f42" />
+            <Object Name="Reset" ObjectId="e4fc0fcb-acc2-4869-b9e0-f74a488e077b" />
+          </Object>
+          <Object Name="FB_JamConveyor" ObjectId="6b6f90fb-5a6e-4c81-aa64-6f99476e55dd">
+            <Object Name="Start" ObjectId="b414f030-e14f-44e3-a33a-25a8a31db3e9" />
+            <Object Name="Reset" ObjectId="9965ee90-687e-42af-95f7-6507f4c25ee4" />
+          </Object>
+        </Object>
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>
