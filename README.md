@@ -151,6 +151,3 @@ All tests were manual, in the simulator.
     └── visu.png
 ```
 
-## Author
-
-Your Name, [LinkedIn](https://www.linkedin.com/) | your.email@example.com
