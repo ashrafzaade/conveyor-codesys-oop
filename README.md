@@ -91,7 +91,7 @@ Conveyor 2 has its own sensor (`bSensor2`). It has no visualization elements and
 ## How to run
 
 1. Install the free **CODESYS Development System V3** from the [CODESYS Store](https://store.codesys.com) (Windows only). Developed with V3.5 SP22 Patch 4.
-2. Open `Conveyor_Mini.projectarchive` (`File → Project Archive → Extract Archive…`).
+2. Open `Conveyor_Mini.project` (`File → Open Project…`).
 3. Enable `Online → Simulation`.
 4. `Build → Build`, then `Online → Login` and `Debug → Start` (F5).
 5. Open the `Visu` tab and use the buttons. For conveyor 2, write `bSensor2` in the `PLC_PRG` watch window.
@@ -139,7 +139,7 @@ All tests were manual, in the simulator.
 ```
 .
 ├── README.md
-├── Conveyor_Mini.projectarchive   # full CODESYS project
+├── Conveyor_Mini.project   # full CODESYS project
 ├── Conveyor_Mini.xml              # PLCopen XML export (readable text)
 ├── src/                           # Structured Text sources as plain text
 │   ├── PLC_PRG.st
